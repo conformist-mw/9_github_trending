@@ -1,5 +1,4 @@
 import requests
-from requests.compat import urljoin
 import datetime as DT
 
 
