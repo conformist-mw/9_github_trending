@@ -18,8 +18,7 @@ def get_trending_repositories(top_size):
 def get_open_issues_amount(full_name):
     url = 'https://api.github.com/repos/{}/issues'.format(full_name)
     response = requests.get(url).json()
-    issues = ['\t' + link['url'] for link in response]
-    return issues
+    return ['\t' + link['url'] for link in response]
 
 
 if __name__ == '__main__':
