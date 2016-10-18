@@ -1,4 +1,5 @@
 import requests
+from requests.compat import urljoin
 import datetime as DT
 
 
@@ -12,16 +13,23 @@ def get_trending_repositories(top_size):
     params = {'q': 'created:>' + week(), 'sort': 'stars', 'order': 'desc'}
     response = requests.get(url, params=params)
     repos = response.json()['items'][:top_size]
-    # issues:
-    d = {}
-    for repo in repos:
-        d[repo['name']] = repo['open_issues_count']
-    return d
+    return [repo['full_name'] for repo in repos]
 
 
-def get_open_issues_amount(repo_owner, repo_name):
-    pass
+def get_open_issues_amount(full_name):
+    url = 'https://api.github.com/repos/{}/issues'.format(full_name)
+    response = requests.get(url).json()
+    issues = ['\t' + link['url'] for link in response]
+    return issues
 
 
 if __name__ == '__main__':
-    print(get_trending_repositories(5))
+    repo_names = get_trending_repositories(20)
+    for name in repo_names:
+        user, repo = name.split('/')
+        print('User: {}, repo: {}'.format(user, repo))
+        issues = get_open_issues_amount(name)
+        print('Issues amount: {}'.format(len(issues)))
+        if len(issues) > 0:
+            print('Links: ')
+            print(*issues, sep='\n')
