@@ -2,16 +2,13 @@ import requests
 from datetime import date, timedelta
 
 
-def week_ago():
-    today = date.today()
-    return str(today - timedelta(days=7))
-
-
-def get_trending_repositories(top_size):
+def get_repos_name_list(amount):
     url = 'https://api.github.com/search/repositories'
-    params = {'q': 'created:>' + week_ago(), 'sort': 'stars', 'order': 'desc'}
+    week_ago = date.today() - timedelta(days=7)
+    params = {'q': 'created:>{}'.format(str(week_ago)),
+              'sort': 'stars', 'order': 'desc'}
     response = requests.get(url, params=params)
-    repos = response.json()['items'][:top_size]
+    repos = response.json()['items'][:amount]
     return [repo['full_name'] for repo in repos]
 
 
@@ -22,7 +19,7 @@ def collect_open_issues_links(repo_full_name):
 
 
 if __name__ == '__main__':
-    trend_repos = get_trending_repositories(20)
+    trend_repos_name = get_repos_name_list(20)
     for name in trend_repos:
         user, repo = name.split('/')
         print('User: {}, repo: {}'.format(user, repo))
