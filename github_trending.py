@@ -19,8 +19,8 @@ def collect_open_issues_links(repo_full_name):
 
 
 if __name__ == '__main__':
-    trend_repos_name = get_repos_name_list(20)
-    for name in trend_repos:
+    trend_repo_names = get_repos_name_list(20)
+    for name in trend_repo_names:
         user, repo = name.split('/')
         print('User: {}, repo: {}'.format(user, repo))
         issues = collect_open_issues_links(name)
